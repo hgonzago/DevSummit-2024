@@ -1,103 +1,127 @@
-<html lang="en">
-
+<!DOCTYPE html>
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <link rel="icon" type="image/png" href="assets/esri.png" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <link rel="icon" type="image/png" href="/esri.png" />
   <title>April 8, 2024 Total Solar Eclipse</title>
 
-<!-- Calcite imports -->
-<script type="module" src="https://js.arcgis.com/calcite-components/2.6.0/calcite.esm.js"></script>
-<link rel="stylesheet" type="text/css" href="https://js.arcgis.com/calcite-components/2.6.0/calcite.css" />
+  <!-- Calcite imports -->
+  <script type="module" src="https://js.arcgis.com/calcite-components/2.6.0/calcite.esm.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://js.arcgis.com/calcite-components/2.6.0/calcite.css" />
 
-<!-- ArcGIS Maps SDK for JavaScript imports -->
-<link rel="stylesheet" href="https://js.arcgis.com/4.29/esri/themes/light/main.css">
-<script src="https://js.arcgis.com/4.29/"></script>
+  <!-- ArcGIS Maps SDK for JavaScript imports -->
+  <script src="https://js.arcgis.com/4.29/"></script>
+  <link id="jsapi-mode-light" rel="stylesheet"
+    href="https://js.arcgis.com/4.29/@arcgis/core/assets/esri/themes/light/main.css" />
+  <link disabled id="jsapi-mode-dark" rel="stylesheet" href="https://js.arcgis.com/4.29/esri/themes/dark/main.css" />
+  <script type="module" src="https://js.arcgis.com/map-components/4.29/arcgis-map-components.esm.js"></script>
 
-<!-- Demo imports -->
-
-<script type="module" src="./js/main.js" ></script>
-<script type="module" src="./utilityFunctions.js" ></script>
-<link rel="stylesheet" href="./css/style.css" />
-
+  <!-- Demo imports -->
+  <script src="/src/main.js" defer></script>
+  <link rel="stylesheet" href="./style.css" />
 </head>
 
 <body>
+  <calcite-loader></calcite-loader>
+  <calcite-shell content-behind hidden>
+    <calcite-navigation navigation-action slot="header" id="nav">
+      <calcite-navigation-logo href="" icon="image-layer" alt="Application logo" slot="logo"
+        heading="Heather's data from anywhere demo" description="Esri Developer Summit 2024"></calcite-navigation-logo>
+      <calcite-action-pad layout="horizontal" expand-disabled slot="content-end">
 
-<body>
-<calcite-shell content-behind>
-  <calcite-navigation navigation-action slot="header" id="nav">
-    <calcite-navigation-logo href="" icon="image-layer" alt="Application logo" slot="logo"
-      heading="ArcGIS Maps SDK for JavaScript: Bring in Data from Anywhere"
-      description="Esri Developer Summit 2024"></calcite-navigation-logo>
-    <calcite-action-pad layout="horizontal" expand-disabled slot="content-end">
-      <calcite-action id="toggle-modal" text="About this application" icon="information"></calcite-action>
-    </calcite-action-pad>
+        <calcite-action id="add-wfs-layer" scale="l" text="Add WFS layer" icon="layer-points"></calcite-action>
 
-        <calcite-tooltip placement="bottom" reference-element="toggle-modal" close-on-click slot="content-end">About this
-          application</calcite-tooltip>
-        </calcite-navigation>
+        <calcite-action id="add-wfs-effect" scale="l" text="Add WFS Feature Effect" icon="color-coded-map"></calcite-action>
 
-      <calcite-shell-panel slot="panel-end" display-mode="float">
-        <calcite-block heading="Layers" collapsible open>
-          <calcite-panel id="layer-list-panel"> </calcite-panel>
-        </calcite-block>
-      </calcite-shell-panel>
+        <calcite-action id="add-ogc-layer" scale = "l" text="Add OGC layer" icon="layer-polygon"></calcite-action>
+
+        <calcite-action id="add-ogc-renderer" scale = "l"  text="Update OGC renderer" icon="shapes"></calcite-action>
+
+        <calcite-action id="ogc-cluster" scale = "l" text="Apply OGC cluster" icon="clustering"></calcite-action>
+        <calcite-action id="toggle-modal" scale="l" text="About this application" icon="information"></calcite-action>
+
+      </calcite-action-pad>
+
+      <calcite-tooltip placement="bottom" reference-element="add-wfs-layer" close-on-click slot="content-end">Add WFS Layer</calcite-tooltip>
+
+      <calcite-tooltip placement="bottom" reference-element="add-wfs-effect" close-on-click slot="content-end">Add WFS layer feature effect</calcite-tooltip>
+
+      <calcite-tooltip placement="bottom" reference-element="add-ogc-layer" close-on-click slot="content-end">Add OGC Layer</calcite-tooltip>
+
+      <calcite-tooltip placement="bottom" reference-element="add-ogc-renderer" close-on-click slot="content-end">Add OGC layer renderer</calcite-tooltip>
+
+      <calcite-tooltip placement="bottom" reference-element="ogc-cluster" close-on-click slot="content-end">Add cluster</calcite-tooltip>
       
-      <div id="viewDiv"></div>
-      </calcite-shell>
+      <calcite-tooltip placement="bottom" reference-element="toggle-modal" close-on-click slot="content-end">About this application</calcite-tooltip>
+    </calcite-navigation>
 
-  <!-- Demo template interactive elements -->
-  <calcite-modal id="modal">
-    <div slot="header">About this application</div>
-    <div slot="content">
-      <calcite-notice open>
-        <span slot="title">This demonstration application is a companion resource to the "ArcGIS Maps SDK for JavaScript:
-          Bring in
-          Data from Anywhere" session at Esri Developer Summit 2024.
-        </span>
-      </calcite-notice>
-      This example illustrates how to use GeoJSON, CSV, and WFS layers in the ArcGIS Maps SDK for JavaScript.
-      <calcite-link target="_blank" href=""> a great topic</calcite-link>.
-      <ul>
-        <li>Creating GeoJSON and CSV Layers</li>
-        <li>Creating a GeoJSON layer from JSON</li>
-        <li>Rendering</li>
-        <li>Popups</li>
-        <li>Labeling</li>
-        <li>Querying</li>
-      </ul>
-      Learn more in the documentation
-      <calcite-link target="_blank"
-        href="https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-GeoJSONLayer.html">GeoJSONLayer</calcite-link>.
-      <calcite-link target="_blank"
-        href="https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-CSVLayer.html">CSVLayer</calcite-link>.
-      <hr />
-      <calcite-link target="_blank" href="">Application source code</calcite-link>
-      is available in the
-      <calcite-link target="_blank" href="https://github.com/EsriDevEvents/">Esri Developer Events GitHub
-        organization</calcite-link>.
-      <hr />
-      Map data is sourced from
-      <calcite-link target="_blank" href="https://svs.gsfc.nasa.gov/5073">NASA</calcite-link> and the
-      <calcite-link target="_blank" href="https://livingatlas.arcgis.com/en/home/">ArcGIS Living Atlas of the World</calcite-link>.
-    </div>
-  </calcite-modal>
-  
+      <calcite-shell-panel slot="panel-end" display-mode="dock">
+          <calcite-panel id="legend-panel"> </calcite-panel>
+      </calcite-shell-panel>
+    
+    <div id="viewDiv"></div>
+  </calcite-shell>
+
+    <!-- Demo template interactive elements -->
+    <calcite-modal id="modal">
+      <div slot="header">About this application</div>
+      <div slot="content">
+        <calcite-notice open>
+          <span slot="title">This demonstration application is a companion resource to the "ArcGIS Maps SDK for JavaScript:
+            Bring in
+            Data from Anywhere" session at Esri Developer Summit 2024.
+          </span>
+        </calcite-notice>
+        This example illustrates how to use GeoJSON, CSV, and OGC layers in the ArcGIS Maps SDK for JavaScript.
+        <calcite-link target="_blank" href=""> a great topic</calcite-link>.
+        <ul>
+          <li>Creating GeoJSON and CSV Layers</li>
+          <li>Creating a GeoJSON layer from JSON</li>
+          <li>Rendering</li>
+          <li>Popups</li>
+          <li>Labeling</li>
+          <li>Querying</li>
+        </ul>
+        Learn more in the documentation
+        <calcite-link target="_blank"
+          href="https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-GeoJSONLayer.html">GeoJSONLayer</calcite-link>.
+        <calcite-link target="_blank"
+          href="https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-CSVLayer.html">CSVLayer</calcite-link>.
+        <hr />
+        <calcite-link target="_blank" href="">Application source code</calcite-link>
+        is available in the
+        <calcite-link target="_blank" href="https://github.com/EsriDevEvents/">Esri Developer Events GitHub
+          organization</calcite-link>.
+        <hr />
+        Map data is sourced from
+        <calcite-link target="_blank" href="https://svs.gsfc.nasa.gov/5073">NASA</calcite-link> and the
+        <calcite-link target="_blank" href="https://livingatlas.arcgis.com/en/home/">ArcGIS Living Atlas of the
+          World</calcite-link>.
+      </div>
+    </calcite-modal>
+
   <calcite-sheet id="sheet" display-mode="float" width-scale="m">
-    <calcite-panel heading="Esri Developer Summit 2024" description="Helpful conference links" closable id="sheet-panel">
+    <calcite-panel heading="Esri Developer Summit 2024" description="Helpful conference links" closable
+      id="sheet-panel">
       <calcite-menu layout="vertical" label="2024 Developer Summit Menu">
         <calcite-menu-item text="2024 Developer Summit Overview" icon-end="launch"
           href="https://www.esri.com/en-us/about/events/devsummit/overview" target="_blank"></calcite-menu-item>
         <calcite-menu-item text="Esri Developer Events GitHub" icon-end="launch" href="https://github.com/EsriDevEvents"
           target="_blank"></calcite-menu-item>
-        <calcite-menu-item text="Esri.com" icon-end="launch" href="https://esri.com" target="_blank"></calcite-menu-item>
+        <calcite-menu-item text="Esri.com" icon-end="launch" href="https://esri.com"
+          target="_blank"></calcite-menu-item>
       </calcite-menu>
       <calcite-notice open slot="footer" width="full" scale="s">
         <span slot="title">Note</span>
-        <span slot="message">This is a demonstration application showcasing platform functionality. While Esri strives to ensure the sample is accurate, it may not reflect implementation behavior in certain environments.</span>
+        <span slot="message">This is a demonstration application showcasing platform functionality. While Esri strives
+          to ensure the sample is accurate, it
+          may not reflect implementation behavior in certain environments.</span>
       </calcite-notice>
     </calcite-panel>
   </calcite-sheet>
-  </body>
-  </html>
+  
+  <script type="module" src="/src/main.js"></script>
+</body>
+
+</html>
