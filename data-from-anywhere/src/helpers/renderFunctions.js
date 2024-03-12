@@ -1,7 +1,6 @@
 import LabelClass from "@arcgis/core/layers/support/LabelClass";
 import PopupTemplate from "@arcgis/core/PopupTemplate";
 import * as typeRendererCreator from "@arcgis/core/smartMapping/renderers/type";
-import Search from "@arcgis/core/widgets/Search";
 
 
 // update the ogcLayer's renderer

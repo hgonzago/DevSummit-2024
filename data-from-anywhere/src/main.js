@@ -44,6 +44,7 @@ const wfsLayer = new WFSLayer({
   copyright: "Esri"
 });
 
+// 1 - Create the WFS layer and reference the URL
 // Create the OGCFeatureLayer and set initial properties
 const ogcLayer = new OGCFeatureLayer({
   url: "https://services.arcgis.com/V6ZHFr6zdgNZuVG0/arcgis/rest/services/Cities_within_path/OGCFeatureServer", // url to the OGC landing page
