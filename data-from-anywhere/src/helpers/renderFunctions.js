@@ -206,27 +206,16 @@ async function createClusterPopupTemplate() {
 }
 
 async function createPopupTemplate(layer, view){
-
-  console.log("the layer within the first function: ", layer);
-  const templateContent = await createCustomContent(layer, view);
-  console.log("the content is: ", templateContent);
   const popupTemplate = new PopupTemplate({
     outFields: ["*"],
     content: [
       {
         type: "text",
         text: "<p>The city of <i>{NAME} </i>will begin 100% totality at</b/> {expression/expr0}</b> and will last for <b>{expression/expr1} </b>.</p>"
-      },
-      {
-        type: "custom",
-        outFields: ["*"],
-        creator: () => {
-          return templateContent ;
-        }
       }
     ],
     description:
-      "<p>This popup describes the times per city with a chart showing them individually</p>",
+      "<p>This popup describes the times per city with a table showing them individually</p>",
     expressionInfos: [
       {
         name: "expr0",
@@ -339,10 +328,10 @@ async function createPopupTemplate(layer, view){
 
 
 // The event contains the feature/graphic
-async function createCustomContent(layer, view) {
+async function doTimeSlider(view) {
 let beginTime, beginMidTime, totalityTime, midEndTime, endTime;
 
-  console.log("the fields passed into the table popup function: ", layer.fields);
+
 
 
 }
