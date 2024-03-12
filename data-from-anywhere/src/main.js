@@ -19,9 +19,10 @@ defineCustomElements(window, {
 // Call function to define UI
 setUp();
 
+// This loads the base map and center and eclipse totality path
 const map = new WebMap({
   portalItem: {
-    id: "1ae947834c464227b09ef330bf10eb94",
+    id: "1ae947834c464227b09ef330bf10eb94"
   },
 });
 
@@ -33,24 +34,24 @@ const view = new MapView({
   },
 });
 
-// Instantiate the OGCFeatureLayer and set initial properties
-// Create OGCFeatureLayer
-const ogcLayer = new OGCFeatureLayer({
-  url: "https://services.arcgis.com/V6ZHFr6zdgNZuVG0/arcgis/rest/services/Cities_within_path/OGCFeatureServer", // url to the OGC landing page
-  collectionId: "0", // unique id of the collection (OverlayedFeatures)
-  legendEnabled: true,
-});
-
+// Create the WFSLayer and set initial properties
 const wfsLayer = new WFSLayer({
   // portalItem: {
-  //   id: "c2a1ec86c6874b7595bbe0bbc26d8e5f",
+  //   id: "c2a1ec86c6874b7595bbe0bbc26d8e5f", // can also be referenced as a portal item
   // }
   url: "https://dservices.arcgis.com/V6ZHFr6zdgNZuVG0/arcgis/services/US_states_wfs/WFSServer", // url to your WFS endpoint
   name: "US_states_polygons", // name of the FeatureType
   copyright: "Esri"
 });
 
-// once the view is ready, get the layer view from the ogc layer and update
+// Create the OGCFeatureLayer and set initial properties
+const ogcLayer = new OGCFeatureLayer({
+  url: "https://services.arcgis.com/V6ZHFr6zdgNZuVG0/arcgis/rest/services/Cities_within_path/OGCFeatureServer", // url to the OGC landing page
+  collectionId: "0", // unique id of the collection (OverlayedFeatures)
+  legendEnabled: true
+});
+
+// Once the view is ready, get the layer view from the OGC layer and update
 view.when(async () => {
   map.when(() => {
     let activeWidget;
@@ -112,6 +113,7 @@ function setUp() {
   const addOgc = document.getElementById("add-ogc-layer");
   const renderOgc = document.getElementById("add-ogc-renderer");
   const clusterOgc = document.getElementById("ogc-cluster");
+  const addTime = document.getElementById("timeslider-widget");
 
   toggleModalEl?.addEventListener("click", () => handleModalChange());
   navigationEl?.addEventListener("calciteNavigationActionSelect", () =>
@@ -126,6 +128,7 @@ function setUp() {
   addOgc?.addEventListener("click", () => handleAddOgcLayer());
   renderOgc?.addEventListener("click", () => handleRendererOgc(ogcLayer));
   clusterOgc?.addEventListener("click", () => handleOgcCluster());
+  addTime?.addEventListener("click", () => handleAddTimeSlider());
 
 
   //----------------------
@@ -196,6 +199,14 @@ function setUp() {
     ogcLayer.featureReduction = featureReduction;
 
   }
+
+  // Step 6 - Add a time slider widget
+
+    async function handleAddTimeSlider() {
+
+
+
+    }
 
   // ----------------------
   // END DEMO STEPS

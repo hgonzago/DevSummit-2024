@@ -1,12 +1,14 @@
 import LabelClass from "@arcgis/core/layers/support/LabelClass";
 import PopupTemplate from "@arcgis/core/PopupTemplate";
 import * as typeRendererCreator from "@arcgis/core/smartMapping/renderers/type";
+import Search from "@arcgis/core/widgets/Search";
+
 
 // update the ogcLayer's renderer
 export async function updateLayer(layer, view) {
   const renderer = await createRenderer(layer, view);
   layer.renderer = renderer;
-  const template = await createPopupTemplate(layer);
+  const template = await createPopupTemplate(layer, view);
   layer.popupTemplate = template;
 }
 
@@ -203,25 +205,41 @@ async function createClusterPopupTemplate() {
   return clusterPopupTemplate;
 }
 
-async function createPopupTemplate(layer){
+async function createPopupTemplate(layer, view){
+
+  console.log("the layer within the first function: ", layer);
+  const templateContent = await createCustomContent(layer, view);
+  console.log("the content is: ", templateContent);
   const popupTemplate = new PopupTemplate({
     outFields: ["*"],
     content: [
       {
         type: "text",
-        text: "<p>The city of <i>{NAME} </i>will begin 100% totality at</b/> {expression/expr0}</b> and will last for <b>{expression/expr1} </b>.</p>",
+        text: "<p>The city of <i>{NAME} </i>will begin 100% totality at</b/> {expression/expr0}</b> and will last for <b>{expression/expr1} </b>.</p>"
       },
+      {
+        type: "custom",
+        outFields: ["*"],
+        creator: () => {
+          return templateContent ;
+        }
+      }
     ],
     description:
-      "<p>The city of <i>{NAME} </i>will begin 100% totality at<b> {expression/expr0}</b> and will last for <b>{expression/expr1} </b>.</p>",
+      "<p>This popup describes the times per city with a chart showing them individually</p>",
     expressionInfos: [
       {
         name: "expr0",
         title: "Get totality time",
         expression: `var inputDate = $feature.UTC_Time_100__totality;
-        var hours = Hour(inputDate);
-        var minutes = Minute(inputDate);
-        var seconds = Second(inputDate);
+
+        var inputDateInMillis = inputDate * 1000;
+        
+        var dateObject = Date(inputDateInMillis);
+
+        var hours = Hour(dateObject);
+        var minutes = Minute(dateObject);
+        var seconds = Second(dateObject);
 
         var amPm = "AM";
         
@@ -235,7 +253,7 @@ async function createPopupTemplate(layer){
         var formattedTime = Text(hours, '00') + ':' + Text(minutes, '00') + ':' + Text(seconds, '00') + ' ' + amPm;
         
         return formattedTime;`,
-        returnType: "string"
+        returnType: "string",
       },
       {
         name: "expr1",
@@ -316,5 +334,15 @@ async function createPopupTemplate(layer){
     title: "City: {NAME}",
   });
 
-      return popupTemplate;
+    return popupTemplate;
+}
+
+
+// The event contains the feature/graphic
+async function createCustomContent(layer, view) {
+let beginTime, beginMidTime, totalityTime, midEndTime, endTime;
+
+  console.log("the fields passed into the table popup function: ", layer.fields);
+
+
 }
