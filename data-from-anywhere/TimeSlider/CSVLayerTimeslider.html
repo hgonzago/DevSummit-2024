@@ -1,0 +1,104 @@
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>
+    CSVLayer with TimeSlider| Sample | ArcGIS Maps SDK for JavaScript 4.29
+  </title>
+
+  <style>
+    html,
+    body,
+    #viewDiv {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+      background-color: aliceblue;
+    }
+
+    #timeSlider {
+      position: absolute;
+      left: 5%;
+      right: 5%;
+      bottom: 20px;
+    }
+  </style>
+
+  <link rel="stylesheet" href="https://js.arcgis.com/4.29/esri/themes/light/main.css" />
+  <script src="https://js.arcgis.com/4.29/"></script>
+
+  <script>
+    require([
+        "esri/Map",
+        "esri/layers/CSVLayer",
+        "esri/views/MapView",
+        "esri/layers/support/TimeInfo",
+        "esri/widgets/TimeSlider",
+        "esri/core/reactiveUtils"
+      ], (Map, CSVLayer, MapView, TimeInfo, TimeSlider, reactiveUtils) => {
+        let layerView;
+        const url =
+          "https://hgonzago.github.io/DevSummit-2024/data-from-anywhere/data/cities-eclipse.csv";
+        var dateStringstart = "4/8/2024 5:27:30 PM UTC";
+        var dateObjectstart = new Date(dateStringstart);
+        var dateStringend = "4/8/2024 6:32:40 PM UTC";
+        var dateObjectend = new Date(dateStringend);
+        const timeInfo = new TimeInfo({
+          startField: "Date100Start",
+          interval: {
+            unit: "minutes",
+            value: 7
+          }
+        });
+        const csvLayer = new CSVLayer({
+          outFields: ["*"],
+          url: url,
+          copyright: "USGS Earthquakes",
+          timeInfo: timeInfo,
+          useViewTime: true,
+        });
+        const map = new Map({
+          basemap: "hybrid",
+          layers: [csvLayer],
+        });
+        const view = new MapView({
+          map: map,
+          container: "viewDiv"
+        });
+        let timeSlider;
+
+    setupTimeSlider();
+        async function  setupTimeSlider () {
+          // wait till the layer view is loaded
+          const lv = await view.whenLayerView(csvLayer);
+          layerView = lv;
+
+      timeSlider = new TimeSlider({
+        container: "timeSlider",
+        mode: "cumulative-from-start",
+        fullTimeExtent: csvLayer.timeInfo.fullTimeExtent,
+        playRate: 500,
+        stops: {
+          interval: {
+            value: 7,
+            unit: "minutes"
+          }
+        },
+        view: view
+      });
+              view.ui.add(timeSlider, "bottom-left");
+
+    }
+
+    });
+  </script>
+</head>
+
+<body>
+  <div id="viewDiv"></div>
+  <div id="timeSlider"></div>
+</body>
+
+</html>
