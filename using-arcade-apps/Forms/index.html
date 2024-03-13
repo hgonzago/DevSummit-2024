@@ -1,0 +1,106 @@
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Parcels and permits - value expression</title>
+
+  <script src="https://js.arcgis.com/calcite-components/1.0.5/calcite.esm.js" type="module"></script>
+  <link rel="stylesheet" href="https://js.arcgis.com/calcite-components/1.0.5/calcite.css" />
+
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/styles/default.min.css">
+  <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+
+  <script src="https://js.arcgis.com/4.29/"></script>
+  <link rel="stylesheet" href="https://js.arcgis.com/4.29/esri/themes/light/main.css" />
+
+  <link rel="stylesheet" href="css/app.css" />
+  <script src="js/app.js"></script>
+
+</head>
+
+<body>
+  <calcite-loader></calcite-loader>
+  <calcite-shell content-behind>
+    <calcite-shell-panel slot="panel-start" detached>
+      <calcite-action-bar slot="action-bar">
+        <calcite-action data-action-id="arcadeSyntax" text="Arcade script" icon="script"></calcite-action>
+        <calcite-action data-action-id="visibility" text="Value expression" icon="brackets-curly"></calcite-action>
+        <calcite-action data-action-id="webappCode"  text="Web app" icon="code"></calcite-action>
+      </calcite-action-bar>
+
+      <!-- Arcade syntax panel showing small snippet of syntax used in demo-->
+      <calcite-panel heading="Generate Parcel ID" headingLevel = "2"
+        data-panel-id="arcadeSyntax" hidden><div id="arcadeSyntax-container"><pre><code class="language-javascript">
+// Check if in the Create feature workflow. If so, generate a new ID.
+// If in an update workflow, return original parcel_id value
+
+If($editcontext.editType == 'INSERT') {
+  var newParcelId;
+  newParcelId = Random();
+  var updatedId = Replace(newParcelId, '0.', '')
+  var trimmedId = Left(updatedId, 7)
+  return trimmedId;
+} else {
+  var originalId;
+  originalId = $originalFeature.parcel_id
+  return originalId;
+}
+}</code></pre></div>
+</calcite-panel>
+
+      <!-- Related record exp panel from the SDK -->
+      <calcite-panel heading="Popuplate related records" headingLevel="2" data-panel-id="visibility" hidden>
+        <div id="visibility-container">
+        <pre><code class="language-javascript">
+// Check the edit context
+// If it is insert (create workflow), return and get out
+if ($editcontext.editType == "INSERT") {
+  return;
+} else {
+  // If not Insert/Create
+  // Get a FeatureSet of owners from the related owners table
+  var ownersFeatureSet = (FeatureSetByRelationshipName($feature, 'NZParcels_Owners', ['*'], false));
+  // Make sure ownersFeatureSet is not empty
+  if(!(IsEmpty(ownersFeatureSet))) {
+  // Count the amount of owners within the owners featureset
+   var countOwners;
+   countOwners = Count(ownersFeatureSet)
+   // Apply the count to the value in the owner_number field
+   return countOwners;
+ }
+ // If ownersFeatureSet is empty, return nothing.
+ return;
+}
+
+return false;</code></pre></div>
+      </calcite-panel>
+      <!-- Web app panel showing small snippet of web app used in demo-->
+      <calcite-panel heading="Calculate parcel area" headingLevel="2" data-panel-id="webappCode" hidden>
+        <div id="webappCode-container"><pre><code class="language-javascript">
+// Calculate the area of the parcel in square meters
+  var parcelArea = Area($feature, 'square-meters');
+    if (IsEmpty(parcelArea)) {
+      return 0;
+    }
+    
+  return Round(parcelArea,2); // Rounds the value to 2 decimal places
+});</code></pre></div>
+  </calcite-panel>
+
+    </calcite-shell-panel>
+
+    <!-- Editor panel -->
+    <calcite-shell-panel slot="panel-end">
+      <div id="editor"></div>
+    </calcite-shell-panel>
+    <div id="viewDiv"></div>
+  </calcite-shell>
+</body>
+
+<script>
+
+</script>
+
+</html>
