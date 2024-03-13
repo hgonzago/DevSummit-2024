@@ -25,9 +25,10 @@
   <calcite-shell content-behind>
     <calcite-shell-panel slot="panel-start" detached>
       <calcite-action-bar slot="action-bar">
-        <calcite-action data-action-id="arcadeSyntax" text="Arcade script" icon="script"></calcite-action>
-        <calcite-action data-action-id="visibility" text="Value expression" icon="brackets-curly"></calcite-action>
-        <calcite-action data-action-id="webappCode"  text="Web app" icon="code"></calcite-action>
+        <calcite-action data-action-id="arcadeSyntax" text="Parcel Id" icon="script"></calcite-action>
+        <calcite-action data-action-id="visibility" text="Update relates" icon="brackets-curly"></calcite-action>
+        <calcite-action data-action-id="webappCode"  text="Update area" icon="code"></calcite-action>
+        <calcite-action data-action-id="visibleExp"  text="Visible expression" icon="script"></calcite-action>
       </calcite-action-bar>
 
       <!-- Arcade syntax panel showing small snippet of syntax used in demo-->
@@ -86,6 +87,14 @@ return false;</code></pre></div>
     }
     
   return Round(parcelArea,2); // Rounds the value to 2 decimal places
+});</code></pre></div>
+    </calcite-panel>
+    <!-- Web app panel showing small snippet visible expression-->
+      <calcite-panel heading="Visible expression" headingLevel="2" data-panel-id="visibleExp" hidden>
+        <div id="visibleExp-container"><pre><code class="language-javascript">
+// Check that the "parcel_type" field element is not empty, if so hide field
+
+!IsEmpty($feature["parcel_type"])
 });</code></pre></div>
   </calcite-panel>
 
