@@ -7,6 +7,8 @@ import * as typeRendererCreator from "@arcgis/core/smartMapping/renderers/type";
 export async function updateLayer(layer, view) {
   const renderer = await createRenderer(layer, view);
   layer.renderer = renderer;
+
+  // create template for the overall ogc layer
   const template = await createPopupTemplate(layer, view);
   layer.popupTemplate = template;
 }
@@ -210,8 +212,57 @@ async function createPopupTemplate(layer, view){
     content: [
       {
         type: "text",
-        text: "<p>The city of <i>{NAME} </i>will begin 100% totality at</b/> {expression/expr0}</b> and will last for <b>{expression/expr1} </b>.</p>"
-      }
+        text: "<p>The city of <i>{NAME} </i>will begin 100% totality at</b/> {expression/expr0}</b> and will last for <b>{expression/expr1} </b>.</p>",
+      },
+      {
+        type: "expression",
+        expressionInfo: {
+          expression: `var cssGray = "style='background-color:lightgray'";
+var cssRight = "style='text-align: right;'";
+var cssCenter = "style='text-align: center;'";
+
+var table = "<table style='width: 100%;'>";
+table +=
+  \`<tr>
+          <td><b>City</b></td>
+          <td><b>First Contact</b></td>
+          <td><b>Second Contact</b></td>
+          <td><b>Totality</b></td>
+          <td><b>Third Contact</b></td>
+          <td><b>Fourth Contact</b></td>
+        </tr>\`;
+
+var beginTime = Date($feature["UTC_Time_0_01____start"]);
+var beginMidTime = Date($feature["UTC_Time_50____start"]);
+var totalityTime = Date($feature["UTC_Time_100__totality"]);
+var midEndTime = Date($feature["UTC_Time_50____end"]);
+var endTime = Date($feature["UTC_Time_0_01____end"]);
+
+var format = "hh:mm:ss A";
+
+var beginFormattedTime = Text(beginTime, format);
+var beginMidFormattedTime = Text(beginMidTime, format);
+var totalityFormattedTime = Text(totalityTime, format);
+var midEndFormattedTime = Text(midEndTime, format);
+var endFormattedTime = Text(endTime, format);
+
+// Build the HTML table
+table +=
+  \`<tr>
+        <td>\${$feature.NAME}</td>
+        <td>\${beginFormattedTime}</td>
+        <td>\${beginMidFormattedTime}</td>
+        <td>\${totalityFormattedTime}</td>
+        <td>\${midEndFormattedTime}</td>
+        <td>\${endFormattedTime}</td>
+      </tr>\`;
+
+table += "</table>";
+
+return { type: "text", text: table };`,
+          title: "City with times for the five stages of the eclipse.",
+        },
+      },
     ],
     description:
       "<p>This popup describes the times per city with a table showing them individually</p>",

@@ -34,7 +34,7 @@ const view = new MapView({
   },
 });
 
-// Create the WFSLayer and set initial properties
+// 1 - Create the WFSLayer and set initial properties
 const wfsLayer = new WFSLayer({
   // portalItem: {
   //   id: "c2a1ec86c6874b7595bbe0bbc26d8e5f", // can also be referenced as a portal item
@@ -44,7 +44,7 @@ const wfsLayer = new WFSLayer({
   copyright: "Esri"
 });
 
-// 1 - Create the WFS layer and reference the URL
+// 4 - Create the OGCFeature layer and reference the URL
 // Create the OGCFeatureLayer and set initial properties
 const ogcLayer = new OGCFeatureLayer({
   url: "https://services.arcgis.com/V6ZHFr6zdgNZuVG0/arcgis/rest/services/Cities_within_path/OGCFeatureServer", // url to the OGC landing page
@@ -136,7 +136,7 @@ function setUp() {
   // BEGIN DEMO STEPS
   //----------------------
 
-  // Step 1 - Add the WFS Layer to the map and render
+  // Step 2 - Add the WFS Layer to the map and render
 
   async function handleAddWfsLayer() {
     const statesRenderer = {
@@ -156,7 +156,7 @@ function setUp() {
     map.add(wfsLayer, 0);
   }
 
-  // Step 2 - Add feature effect to WFS layer
+  // Step 3 - Add feature effect to WFS layer
   async function handleEffectWFS(wfsLayer) {
     const featureFilter = new FeatureFilter({
       where:
@@ -177,12 +177,12 @@ function setUp() {
     wfsLayerView.featureEffect = featureEffect;
   }
 
-  // Step 3 - add OGC Layer to the map
+  // Step 4 - add OGC Layer to the map
   function handleAddOgcLayer() {
     map.add(ogcLayer);
   }
 
-  //Step 4 - Render the OGC layer by unique value and cluster
+  //Step 5 - Render the OGC layer by unique value and cluster
   async function handleRendererOgc(layer) {
     // once the view is ready, get the layer view from the ogc layer and update
     const ogcLayerView = await view.whenLayerView(layer);
@@ -192,7 +192,7 @@ function setUp() {
     );
   }
 
-  // Step 5 - Set a feature reduction cluster on OGC layer
+  // Step 8 - Set a feature reduction cluster on OGC layer
 
   async function handleOgcCluster() {
 
